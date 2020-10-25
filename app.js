@@ -22,7 +22,7 @@ function main(){
         {
           type: "input",
           message: "What is their name?",
-          name: "Name",
+          name: "name",
           //   validate: function (answer) {
           //     if (answer.length < 1) {
           //       return console.log(
@@ -106,9 +106,20 @@ if(ans.another === 'Yes'){
 if(ans.another === 'No'){
   const html = render(employees)
   console.log(html);
+// }
+
+
+
+// CREATE HTML
+var fileName = outputPath;
+var stream = fs.createWriteStream(fileName);
+
+stream.once('open', function(fd) {
+  // var html = buildHtml();
+
+  stream.end(html);
+});
 }
-
-
 } 
 )
 }
