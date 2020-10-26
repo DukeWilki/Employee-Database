@@ -28,6 +28,9 @@ A demo ofthis app is available on https://drive.google.com/file/d/1k01eXmBDt8mJY
 ## Design
 The initial design is themed on 'The A-Team' TV series. This was acheived by using a camo background in the jumbotron, and personaising each employee card with a charachter from the A-Team. Using pop culture references in team building can help build team comoraderie. This initail theme could eventually be built to include other teams (X-Men, Smurfs, LOTR etc) which could be manually selected or randomly assigned.
 
+![Screenshot 1](https://github.com/DukeWilki/Employee-Summary/blob/master/Assets/terminal.JPG)
+![Screenshot 2](https://github.com/DukeWilki/Employee-Summary/blob/master/Assets/browser.JPG)
+
 ## License
 This application has MIT License applied.
 
