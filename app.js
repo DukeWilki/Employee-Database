@@ -1,4 +1,5 @@
 const Manager = require("./lib/Manager");
+const Analyst = require("./lib/Analyst");
 const Engineer = require("./lib/Engineer");
 const Intern = require("./lib/Intern");
 const inquirer = require("inquirer");
@@ -23,20 +24,20 @@ function main(){
           type: "input",
           message: "What is their name?",
           name: "name",
-          //   validate: function (answer) {
-          //     if (answer.length < 1) {
-          //       return console.log(
-          //         "Please enter their name."
-          //       );
-          //     }
-          //     return true;
-          //     },
+            validate: function (answer) {
+              if (answer.length < 1) {
+                return console.log(
+                  "Please enter their name."
+                );
+              }
+              return true;
+              },
         },
         {
             type: "list",
             message: "What is their role:",
             name: "role",
-            choices: ["Manager", "Engineer", "Intern"]
+            choices: ["Manager", "Engineer", "Intern", "Analyst"]
           },
         {
           type: "input",
@@ -48,6 +49,7 @@ function main(){
           type: "input",
           message: "What is their email address:",
           name: "email",
+          
         },
         {
           type: "number",
@@ -57,6 +59,14 @@ function main(){
                 return answers.role === "Manager";
                 }
           },
+          {
+            type: "number",
+            name: "officeNumber",
+            message: "Enter the employee's office phone number:",
+            when: function(answers) {
+                  return answers.role === "Analyst";
+                  }
+            },
         {
           type: "input",
           name: "github",
@@ -81,8 +91,11 @@ function main(){
         },
       ]).then (function(ans){
         if(ans.role === 'Manager' ){
-            employees.push(new Manager(ans.name, ans.id, ans.email, ans.officeNumber))
-        }
+          employees.push(new Manager(ans.name, ans.id, ans.email, ans.officeNumber))
+      }
+      if(ans.role === 'Analyst' ){
+        employees.push(new Analyst(ans.name, ans.id, ans.email, ans.officeNumber))
+    }
         if(ans.role === 'Engineer' ){
             employees.push(new Engineer(ans.name, ans.id, ans.email, ans.github))
         }
