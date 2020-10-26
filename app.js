@@ -11,145 +11,161 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
 
-// Write code to use inquirer to gather information about the development team members,
-// and to create objects for each team member (using the correct classes as blueprints!)
+const employees = [];
 
-const employees = []
-   
+// SOURCE USER INPUT
 
-function main(){
-
-    inquirer.prompt([
-        {
-          type: "input",
-          message: "What is their name?",
-          name: "name",
-            validate: function (answer) {
-              if (answer.length < 1) {
-                return console.log(
-                  "Please enter their name."
-                );
-              }
-              return true;
-              },
-        },
-        {
-            type: "list",
-            message: "What is their role:",
-            name: "role",
-            choices: ["Manager", "Engineer", "Intern", "Analyst"]
-          },
-        {
-          type: "input",
-          message: "What is their id number:",
-          name: "id",
-        },
-    
-        {
-          type: "input",
-          message: "What is their email address:",
-          name: "email",
-          
-        },
-        {
-          type: "number",
-          name: "officeNumber",
-          message: "Enter the employee's office phone number:",
-          when: function(answers) {
-                return answers.role === "Manager";
-                }
-          },
-          {
-            type: "number",
-            name: "officeNumber",
-            message: "Enter the employee's office phone number:",
-            when: function(answers) {
-                  return answers.role === "Analyst";
-                  }
-            },
-        {
-          type: "input",
-          name: "github",
-          message: "Enter the employee's GitHub username:",
-          when: function(answers) {
-                return answers.role === "Engineer";
+function main() {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        message: "What is the employee's name?",
+        name: "name",
+        validate: function (answer) {
+          const pass = answer.match(/^[a-zA-Z\s]+$/i);
+          if (pass) {
+            return true;
           }
+          return "Name must contain letters and spaces only.";
         },
-        {
-          type: "input",
-          name: "school",
-          message: "Enter the employee's school name:",
-          when: function(answers) {
-                return answers.role === "Intern";
-            }
+      },
+      {
+        type: "list",
+        message: "What is their role?",
+        name: "role",
+        choices: ["Manager", "Analyst", "Engineer", "Intern"],
+      },
+      {
+        type: "input",
+        message: "Enter their staff ID number:",
+        name: "id",
+
+        validate: function (answer) {
+          const pass = answer.match(/^\d+$/i);
+          if (pass) {
+            return true;
+          }
+          return "Staff numbers must contain numeric charachters only.";
         },
-        {
-          type: "list",
-          message: "Add another employee?",
-          name: "another",
-          choices: ["Yes", "No"],
+      },
+
+      {
+        type: "input",
+        message: "Enter their email address:",
+        name: "email",
+        validate: function (answer) {
+          const pass = answer.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/i);
+          if (pass) {
+            return true;
+          }
+          return "Email address must conation @ and a dot.";
         },
-      ]).then (function(ans){
-        if(ans.role === 'Manager' ){
-          employees.push(new Manager(ans.name, ans.id, ans.email, ans.officeNumber))
+      },
+      {
+        type: "input",
+        name: "officeNumber",
+        message: "Enter the employee's office phone number:",
+        when: function (answers) {
+          return answers.role === "Manager";
+        },
+        validate: function (answer) {
+          const pass = answer.match(/^\d{5,10}$/i);
+          if (pass) {
+            return true;
+          }
+          return "Phone number must be numeric and between 5 - 10 digits.";
+        },
+      },
+      {
+        type: "input",
+        name: "officeNumber",
+        message: "Enter the employee's office phone number:",
+        when: function (answers) {
+          return answers.role === "Analyst";
+        },
+        validate: function (answer) {
+          const pass = answer.match(/^\d{5,10}$/i);
+          if (pass) {
+            return true;
+          }
+          return "Phone number must be numeric and between 5 - 10 digits.";
+        },
+      },
+      {
+        type: "input",
+        name: "github",
+        message: "Enter the employee's GitHub username:",
+        when: function (answers) {
+          return answers.role === "Engineer";
+        },
+        validate: function (answer) {
+          const pass = answer.match(/^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}$/i);
+          if (pass) {
+            return true;
+          }
+          return "Username must be alphanumeric, but can contain a dash '-'. Do not include @ or any other special charachter.";
+        },
+      },
+      {
+        type: "input",
+        name: "school",
+        message: "What school does the intern attend?",
+
+        when: function (answers) {
+          return answers.role === "Intern";
+        },
+        validate: function (answer) {
+          const pass = answer.match(/^[a-zA-Z0-9\d]+$/i);
+          if (pass) {
+            return true;
+          }
+          return "School must contain letters and spaces only.";
+        },
+      },
+      {
+        type: "list",
+        message: "Would you like to add another employee?",
+        name: "another",
+        choices: ["Yes", "No"],
+      },
+    ])
+    .then(function (ans) {
+      if (ans.role === "Manager") {
+        employees.push(
+          new Manager(ans.name, ans.id, ans.email, ans.officeNumber)
+        );
       }
-      if(ans.role === 'Analyst' ){
-        employees.push(new Analyst(ans.name, ans.id, ans.email, ans.officeNumber))
-    }
-        if(ans.role === 'Engineer' ){
-            employees.push(new Engineer(ans.name, ans.id, ans.email, ans.github))
-        }
-        if(ans.role === 'Intern' ){
-            employees.push(new Intern(ans.name, ans.id, ans.email, ans.school))
-        }
+      if (ans.role === "Analyst") {
+        employees.push(
+          new Analyst(ans.name, ans.id, ans.email, ans.officeNumber)
+        );
+      }
+      if (ans.role === "Engineer") {
+        employees.push(new Engineer(ans.name, ans.id, ans.email, ans.github));
+      }
+      if (ans.role === "Intern") {
+        employees.push(new Intern(ans.name, ans.id, ans.email, ans.school));
+      }
 
+      // RENDER HTML
 
+      console.log(ans.another);
+      if (ans.another === "Yes") {
+        main();
+      }
+      if (ans.another === "No") {
+        const html = render(employees);
+        console.log(html);
 
+        // CREATE HTML
+        var fileName = outputPath;
+        var stream = fs.createWriteStream(fileName);
 
-// After the user has input all employees desired, call the `render` function (required
-// above) and pass in an array containing all employee objects; the `render` function will
-// generate and return a block of HTML including templated divs for each employee!
-
-
-       
-console.log(ans.another)
-if(ans.another === 'Yes'){
-    main()
+        stream.once("open", function (fd) {
+          stream.end(html);
+        });
+      }
+    });
 }
-if(ans.another === 'No'){
-  const html = render(employees)
-  console.log(html);
-// }
-
-
-
-// CREATE HTML
-var fileName = outputPath;
-var stream = fs.createWriteStream(fileName);
-
-stream.once('open', function(fd) {
-  // var html = buildHtml();
-
-  stream.end(html);
-});
-}
-} 
-)
-}
-main()
-
-// After you have your html, you're now ready to create an HTML file using the HTML
-// returned from the `render` function. Now write it to a file named `team.html` in the
-// `output` folder. You can use the variable `outputPath` above target this location.
-// Hint: you may need to check if the `output` folder exists and create it if it
-// does not.
-
-// HINT: each employee type (manager, engineer, or intern) has slightly different
-// information; write your code to ask different questions via inquirer depending on
-// employee type.
-
-// HINT: make sure to build out your classes first! Remember that your Manager, Engineer,
-// and Intern classes should all extend from a class named Employee; see the directions
-// for further information. Be sure to test out each class and verify it generates an
-// object with the correct structure and methods. This structure will be crucial in order
-// for the provided `render` function to work! ```
+main();
