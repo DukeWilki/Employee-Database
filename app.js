@@ -116,7 +116,7 @@ function main() {
           return answers.role === "Intern";
         },
         validate: function (answer) {
-          const pass = answer.match(/^[a-zA-Z0-9\d]+$/i);
+          const pass = answer.match(/^[a-zA-Z\s]+$/i);
           if (pass) {
             return true;
           }
